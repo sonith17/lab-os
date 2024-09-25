@@ -46,6 +46,7 @@ Thread::Thread(char *threadName, bool _has_dynamic_name /*=false*/) {
     timeLeft=0;
     ///
     status = JUST_CREATED;
+    pr= 8;
     for (int i = 0; i < MachineStateSize; i++) {
         machineState[i] = NULL;  // not strictly necessary, since
                                  // new thread ignores contents

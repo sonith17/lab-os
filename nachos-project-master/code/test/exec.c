@@ -8,10 +8,17 @@
 
 int main() {
     int pid;
-    pid = Exec("num_io");
+    int i,u=6;
+    pid = Exec2("../test/num_io",50);
     if (pid < 0) {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid);
-    } else
-        Join(pid);
+    } //else
+    //     Join(pid);
+    while (1)
+    {
+        // PrintString("C");
+        ;
+    }
+    
 }

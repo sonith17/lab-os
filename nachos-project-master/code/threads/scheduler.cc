@@ -22,18 +22,28 @@
 #include "debug.h"
 #include "scheduler.h"
 #include "main.h"
+#include <time.h>
 
 //----------------------------------------------------------------------
 // Scheduler::Scheduler
 // 	Initialize the list of ready but not running threads.
 //	Initially, no ready threads.
 //----------------------------------------------------------------------
+///
+int Compare1(Thread* t,Thread* t1)
+{
+   if( t->pr > t1->pr) 
+   {return 1;}
+   return -1;
+}
+///
 
 Scheduler::Scheduler() {
     readyList = new List<Thread *>;
     toBeDestroyed = NULL;
     ///
     sleepProcesses = new sleepQueue();
+    readyList2 = new SortedList<Thread*>(Compare1);
     ///
 }
 
@@ -58,6 +68,7 @@ void Scheduler::ReadyToRun(Thread *thread) {
 
     thread->setStatus(READY);
     readyList->Append(thread);
+    readyList2->Insert(thread);
 }
 
 //----------------------------------------------------------------------
@@ -74,7 +85,13 @@ Thread *Scheduler::FindNextToRun() {
     if (readyList->IsEmpty()) {
         return NULL;
     } else {
-        return readyList->RemoveFront();
+        ///
+        //ListIterator<Thread *> *itr = new ListIterator<Thread *>(readyList);
+        Thread *c1=nullptr;
+        c1 = readyList2->RemoveFront();
+        readyList->Remove(c1);
+        return c1;
+        ///
     }
 }
 
@@ -123,7 +140,7 @@ void Scheduler::Run(Thread *nextThread, bool finishing) {
     // in switch.s.  You may have to think
     // a bit to figure out what happens after this, both from the point
     // of view of the thread and from the perspective of the "outside world".
-
+    cout<<clock()<<" old: "<<oldThread->getName()<<" new : "<<nextThread->getName()<<endl;
     SWITCH(oldThread, nextThread);
 
     // we're back, running oldThread

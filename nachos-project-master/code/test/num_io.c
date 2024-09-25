@@ -6,5 +6,22 @@
  */
 
 #include "syscall.h"
+#define stdin 0
+#define stdout 1
 
-int main() { PrintNum(ReadNum()); }
+int main() {
+    int pid;
+    int i;
+    int u =3;
+    pid = Exec2("../test/add",10);
+        if (pid < 0) 
+        {
+        Write("Exec failed: ", 14, stdout);
+        PrintNum(pid);
+     }
+    while (1)
+    {
+        // PrintString("B");
+        ;
+    }
+}

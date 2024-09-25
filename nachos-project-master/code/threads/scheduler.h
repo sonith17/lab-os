@@ -18,12 +18,16 @@
 // thread is running, and which threads are ready but not running.
 
 /// 
+
 struct sleepQueue
 {
    Thread* process;
    int timeLeft=0;
    struct sleepQueue* nextProcess;
 };
+
+
+   
 ///
 
 class Scheduler {
@@ -53,6 +57,7 @@ class Scheduler {
                                // but not running
     Thread* toBeDestroyed;     // finishing thread to be destroyed
                                // by the next thread that runs
+    SortedList<Thread*>* readyList2;
    
 };
 

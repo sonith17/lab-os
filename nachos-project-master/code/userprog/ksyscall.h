@@ -32,6 +32,18 @@ void SysSleep(int op1)
     kernel->interrupt->SetLevel(currentState);
 }
 /// 
+///
+int SysExec2(char* name,int pri) 
+{
+    OpenFile* oFile = kernel->fileSystem->Open(name);
+    if (oFile == NULL) {
+        DEBUG(dbgSys, "\nExec:: Can't open this file.");
+        return -1;
+    }
+    delete oFile;
+    return kernel->pTab->ExecUpdate2(name,pri);
+}
+/// 
 int SysReadNum() {
     readUntilBlank();
 

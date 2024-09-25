@@ -343,6 +343,23 @@ void handle_SC_Exec() {
 
     return move_program_counter();
 }
+///
+void handle_SC_Exec2() {
+    int virtAddr;
+    virtAddr = kernel->machine->ReadRegister(4);  
+    char* name = stringUser2System(virtAddr);  
+    if (name == NULL) {
+        DEBUG(dbgSys, "\n Not enough memory in System");
+        ASSERT(false);
+        kernel->machine->WriteRegister(2, -1);
+        return move_program_counter();
+    }
+    
+    int priority = (int)kernel->machine->ReadRegister(5);
+    kernel->machine->WriteRegister(2, SysExec2(name, priority)); 
+    return move_program_counter();
+}
+///
 
 /**
  * @brief handle System Call Join
@@ -459,7 +476,10 @@ void ExceptionHandler(ExceptionType which) {
                 ///
                 case SC_Sleep:
                     return handle_SC_Sleep();
+                
                 ///
+                case SC_Exec2:
+                    return handle_SC_Exec2();
                 case SC_ReadNum:
                     return handle_SC_ReadNum();
                 case SC_PrintNum:

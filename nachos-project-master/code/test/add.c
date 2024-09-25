@@ -8,15 +8,11 @@
 #include "syscall.h"
 
 int main() {
-    int result;
-
-    result = Mul(42, 2);
-    PrintString("hi Sonith\n");
-    PrintNum(result);
-    PrintString("\n");
-    PrintString("before sleep\n");
-    Sleep(30000);
-    PrintString("after sleep\n");
-    Halt();
+    while (1)
+    {
+        // PrintString("A");
+        ;
+    }
+    
     /* not reached */
 }

@@ -23,6 +23,9 @@ class PTable {
     bool IsExist(int pid);
     void Remove(int pid);
     char* GetFileName(int id);
+    ///
+    int ExecUpdate2(char* name,int pr);
+    ///
 };
 
 #endif

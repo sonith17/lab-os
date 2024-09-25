@@ -51,6 +51,7 @@
 ///
 #define SC_Mul 55
 #define SC_Sleep 56
+#define SC_Exec2 57
 ///
 #ifndef IN_ASM
 
@@ -107,7 +108,9 @@ typedef int ThreadId;
 /* This can be implemented as a call to ExecV.
  */
 SpaceId Exec(char *exec_name);
-
+///
+SpaceId Exec2(char*exec_name,int pr);
+///
 /* Run the executable, stored in the Nachos file "argv[0]", with
  * parameters stored in argv[1..argc-1] and return the
  * address space identifier

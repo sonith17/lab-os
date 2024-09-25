@@ -76,6 +76,24 @@ int PCB::Exec(char* filename, int id) {
     return id;
 }
 
+///
+int PCB::Exec2(char* filename,int id,int pr)
+{
+    multex->P();
+    this->thread = new Thread(filename, true);
+    if (this->thread == NULL) {
+        printf("\nPCB::Exec: Not enough memory!\n");
+        multex->V();  // Nha CPU de nhuong CPU cho tien trinh khac
+        return -1;    // Tra ve -1 neu that bai
+    }
+    this->thread->processID = id;
+    this->thread->pr = pr;
+    this->parentID = kernel->currentThread->processID;
+    this->thread->Fork(StartProcess_2, &this->thread->processID);
+    multex->V();
+    return id;
+}
+/// 
 int PCB::GetID() { return thread->processID; }
 
 int PCB::GetNumWait() { return numwait; }
