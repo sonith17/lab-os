@@ -9,16 +9,18 @@
 int main() {
     int pid;
     int i,u=6;
-    pid = Exec2("../test/num_io",50);
+    pid = Exec("../test/add");
+    WaitUntil(pid);
     if (pid < 0) {
         Write("Exec failed: ", 14, stdout);
         PrintNum(pid);
     } //else
     //     Join(pid);
-    while (1)
-    {
-        // PrintString("C");
-        ;
-    }
+    // while (1)
+    // {
+    //     // PrintString("C");
+    //     ;
+    // }
+    PrintString("exec-complete\n");
     
 }

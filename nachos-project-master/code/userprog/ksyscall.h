@@ -44,6 +44,15 @@ int SysExec2(char* name,int pri)
     return kernel->pTab->ExecUpdate2(name,pri);
 }
 /// 
+///
+void SysWaitUntill(int op1)
+{
+    kernel->scheduler->WaitUntil(kernel->currentThread,op1);
+    auto currentState = kernel->interrupt->SetLevel(IntOff);
+    kernel->currentThread->Sleep(false);
+    kernel->interrupt->SetLevel(currentState);
+}
+///
 int SysReadNum() {
     readUntilBlank();
 

@@ -44,6 +44,7 @@ Scheduler::Scheduler() {
     ///
     sleepProcesses = new sleepQueue();
     readyList2 = new SortedList<Thread*>(Compare1);
+    waitList = new List<Thread *>();
     ///
 }
 
@@ -64,11 +65,13 @@ Scheduler::~Scheduler() { delete readyList; }
 
 void Scheduler::ReadyToRun(Thread *thread) {
     ASSERT(kernel->interrupt->getLevel() == IntOff);
+    
     DEBUG(dbgThread, "Putting thread on ready list: " << thread->getName());
 
     thread->setStatus(READY);
     readyList->Append(thread);
     readyList2->Insert(thread);
+    
 }
 
 //----------------------------------------------------------------------
@@ -140,7 +143,7 @@ void Scheduler::Run(Thread *nextThread, bool finishing) {
     // in switch.s.  You may have to think
     // a bit to figure out what happens after this, both from the point
     // of view of the thread and from the perspective of the "outside world".
-    cout<<clock()<<" old: "<<oldThread->getName()<<" new : "<<nextThread->getName()<<endl;
+    //cout<<clock()<<" old: "<<oldThread->getName()<<" new : "<<nextThread->getName()<<endl;
     SWITCH(oldThread, nextThread);
 
     // we're back, running oldThread
@@ -183,6 +186,9 @@ void Scheduler::CheckToBeDestroyed() {
 void Scheduler::Print() {
     cout << "Ready list contents:\n";
     readyList->Apply(ThreadPrint);
+    // cout<<"\n Waitlist:";
+    // waitList->Apply(ThreadPrint);
+    // cout<<endl;
 }
 ///
 void Scheduler::ReadyToSleep(Thread* thread,int time)
@@ -194,5 +200,12 @@ void Scheduler::ReadyToSleep(Thread* thread,int time)
     sleepProcess->process=thread;
     sleepProcess->timeLeft=time;
     sleepProcesses=sleepProcess;
+}
+///
+///
+void Scheduler::WaitUntil(Thread* thread,int pid)
+{
+      thread->waitUntilPid=pid;
+      waitList->Append(thread);
 }
 ///

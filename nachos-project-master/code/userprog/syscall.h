@@ -52,6 +52,7 @@
 #define SC_Mul 55
 #define SC_Sleep 56
 #define SC_Exec2 57
+#define SC_WaitUntil 58
 ///
 #ifndef IN_ASM
 
@@ -78,6 +79,9 @@ int Mul(int op1, int op2);
 /// 
 /// 
 void Sleep(int op1);
+///
+///
+void WaitUntil(int pid);
 ///
 int ReadNum();
 

@@ -177,7 +177,33 @@ void Thread::Finish() {
     ASSERT(this == kernel->currentThread);
 
     DEBUG(dbgThread, "Finishing thread: " << name);
-
+    ListIterator<Thread*> *it = new ListIterator<Thread*>(kernel->scheduler->waitList);
+    List<Thread*> *temp = new List<Thread*>();
+    while(!it->IsDone())
+    {
+        Thread* t = it->Item();
+        //cout<<t->getName()<< "it\n";
+        if(t->waitUntilPid==kernel->currentThread->processID)
+        {
+            //cout<<t->getName()<< "it\n";
+            temp->Append(t);
+            //auto currentState = kernel->interrupt->SetLevel(IntOff);
+            kernel->scheduler->ReadyToRun(t);
+        }
+        it->Next();
+    }
+    //cout<<"hyj\n";
+    ListIterator<Thread*> *it1 = new ListIterator<Thread*>(temp);
+    while(!it1->IsDone())
+    {
+        Thread* t = it1->Item();
+        //cout<<"hyj2.1\n";
+        kernel->scheduler->waitList->Remove(t);
+        //cout<<"hyj2.2\n";
+        it1->Next();
+    }
+    //cout<<"hyj2\n";
+    //cout<<"--------------------------------------"<<pcb[id]->GetFileName()<<endl;
     Sleep(TRUE);  // invokes SWITCH
     // not reached
 }
@@ -245,9 +271,11 @@ void Thread::Sleep(bool finishing) {
     DEBUG(dbgThread, "Sleeping thread: " << name);
 
     status = BLOCKED;
+    
+    
     while ((nextThread = kernel->scheduler->FindNextToRun()) == NULL)
         kernel->interrupt->Idle();  // no one to run, wait for an interrupt
-
+        
     // returns when it's time for us to run
     kernel->scheduler->Run(nextThread, finishing);
 }

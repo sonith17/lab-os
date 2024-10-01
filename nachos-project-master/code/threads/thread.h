@@ -97,6 +97,7 @@ class Thread {
     clock_t startTime;
     int timeLeft;
     int pr;
+    int waitUntilPid;
     void FreeSpace() {
         if (space != 0) delete space;
     }
@@ -115,7 +116,7 @@ class Thread {
     void CheckOverflow();  // Check if thread stack has overflowed
     void setStatus(ThreadStatus st) { status = st; }
     char *getName() { return (name); }
-    void Print() { cout << name; }
+    void Print() { cout << name<<endl; }
     void SelfTest();  // test whether thread impl is working
 
    private:

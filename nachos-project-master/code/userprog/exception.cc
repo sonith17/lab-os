@@ -360,6 +360,18 @@ void handle_SC_Exec2() {
     return move_program_counter();
 }
 ///
+///
+void handle_SC_WaitUntil()
+{
+    int virtAddr;
+    virtAddr = kernel->machine->ReadRegister(4);  
+    
+    int pid = (int)kernel->machine->ReadRegister(4);
+    //kernel->machine->WriteRegister(2, (int)SysWaitUntill(pid)); 
+    SysWaitUntill(pid);
+    return move_program_counter();
+}
+///
 
 /**
  * @brief handle System Call Join
@@ -480,6 +492,9 @@ void ExceptionHandler(ExceptionType which) {
                 ///
                 case SC_Exec2:
                     return handle_SC_Exec2();
+                ///
+                case SC_WaitUntil:
+                    return handle_SC_WaitUntil();
                 case SC_ReadNum:
                     return handle_SC_ReadNum();
                 case SC_PrintNum:

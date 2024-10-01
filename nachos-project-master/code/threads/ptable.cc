@@ -107,22 +107,27 @@ int PTable::ExitUpdate(int exitcode) {
         kernel->interrupt->Halt();
         return 0;
     }
-
+    //cout<<"exit1\n";
     if (!IsExist(id)) {
         DEBUG(dbgSys, "Process " << id << " is not exist.");
         return -1;
     }
-
+     //cout<<"exit2\n";
     // Ngược lại gọi SetExitCode để đặt exitcode cho tiến trình gọi.
     pcb[id]->SetExitCode(exitcode);
     pcb[pcb[id]->parentID]->DecNumWait();
-
+     //cout<<"exit3\n";
     // Gọi JoinRelease để giải phóng tiến trình cha đang đợi nó (nếu có)
     // và ExitWait() để xin tiến trình cha cho phép thoát.
-    pcb[id]->JoinRelease();
-    pcb[id]->ExitWait();
+    // pcb[id]->JoinRelease();
+    //cout<<"exit3.5\n";
+    //pcb[id]->ExitWait();
+     //cout<<"exit4\n";
+    
+
 
     Remove(id);
+    //cout<<"exit5\n";
     return exitcode;
 }
 

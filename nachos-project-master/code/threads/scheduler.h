@@ -50,6 +50,10 @@ class Scheduler {
     // SelfTest for scheduler is implemented in class Thread
      ///
     struct sleepQueue* sleepProcesses;
+    List<Thread*>* waitList;
+    ///
+    ///
+    void WaitUntil(Thread* thread,int pid);
     ///
 
    private:
@@ -57,7 +61,9 @@ class Scheduler {
                                // but not running
     Thread* toBeDestroyed;     // finishing thread to be destroyed
                                // by the next thread that runs
+    ///
     SortedList<Thread*>* readyList2;
+    ///
    
 };
 

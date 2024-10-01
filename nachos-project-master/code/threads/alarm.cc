@@ -69,6 +69,9 @@ void Alarm::CallBack() {
         }
     }
     ///
+    ///
+    //ListIterator<Thread *> *itr = new ListIterator<Thread *>(kernel->scheduler->);
+    ///
     Interrupt *interrupt = kernel->interrupt;
     MachineStatus status = interrupt->getStatus();
 

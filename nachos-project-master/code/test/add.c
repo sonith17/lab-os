@@ -8,11 +8,12 @@
 #include "syscall.h"
 
 int main() {
-    while (1)
+    int i = 10000;
+    while (i)
     {
         // PrintString("A");
-        ;
+        i--;
     }
-    
+    PrintString("add-complete\n");
     /* not reached */
 }
