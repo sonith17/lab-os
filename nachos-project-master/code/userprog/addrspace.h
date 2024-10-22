@@ -24,7 +24,9 @@ class AddrSpace {
     AddrSpace(char *fileName);  // Load a program into addr space from
                                 // a file
     ~AddrSpace();               // De-allocate an address space
-
+    ///
+    void Allocate();
+    ///
     void Execute();  // Run a program
                      // assumes the program has already
                      // been loaded

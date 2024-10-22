@@ -146,7 +146,7 @@ AddrSpace::AddrSpace(char *fileName) {
     DEBUG(dbgAddr, "Initializing address space: " << numPages << ", " << size);
     // first, set up the translation
     pageTable = new TranslationEntry[numPages];
-    for (i = 0; i < numPages; i++) {
+    for (i = 0; i < 1; i++) {
         pageTable[i].virtualPage = i;  // for now, virtual page # = phys page #
         pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
         // cerr << pageTable[i].physicalPage << endl;
@@ -164,7 +164,7 @@ AddrSpace::AddrSpace(char *fileName) {
     }
 
     if (noffH.code.size > 0) {
-        for (i = 0; i < numPages; i++)
+        for (i = 0; i < 1; i++)
             executable->ReadAt(
                 &(kernel->machine->mainMemory[noffH.code.virtualAddr]) +
                     (pageTable[i].physicalPage * PageSize),
@@ -172,7 +172,7 @@ AddrSpace::AddrSpace(char *fileName) {
     }
 
     if (noffH.initData.size > 0) {
-        for (i = 0; i < numPages; i++)
+        for (i = 0; i < 1; i++)
             executable->ReadAt(
                 &(kernel->machine->mainMemory[noffH.initData.virtualAddr]) +
                     (pageTable[i].physicalPage * PageSize),
@@ -183,7 +183,47 @@ AddrSpace::AddrSpace(char *fileName) {
     delete executable;
     return;
 }
+///
+void AddrSpace::Allocate()
+{
+    int val = kernel->machine->ReadRegister(BadVAddrReg); //getting address to know which page to load
+    OpenFile *executable = kernel->fileSystem->Open(kernel->currentThread->getName());
+    int i=(unsigned)val / PageSize,size;
+    NoffHeader noffH;
+    executable->ReadAt((char *)&noffH, sizeof(noffH), 0); //reading assembly code from executable
+    if ((noffH.noffMagic != NOFFMAGIC) &&
+        (WordToHost(noffH.noffMagic) == NOFFMAGIC)) //bigendian to little endian
+        SwapHeader(&noffH);
+    ASSERT(noffH.noffMagic == NOFFMAGIC);
+    kernel->addrLock->P();
+    pageTable[i].virtualPage = i;  //creating and intializing page
+    pageTable[i].physicalPage = kernel->gPhysPageBitMap->FindAndSet();
+    pageTable[i].valid = TRUE;
+    pageTable[i].use = FALSE;
+    pageTable[i].dirty = FALSE;
+    pageTable[i].readOnly = FALSE; 
+    bzero(&(kernel->machine
+                ->mainMemory[pageTable[i].physicalPage * PageSize]),
+            PageSize);
+    DEBUG(dbgAddr, "phyPage " << pageTable[i].physicalPage);
+    // a bad virtual address can be in code segment or data segment so we added new checks to determine and avoid overwriting
+    if (noffH.code.size + noffH.code.virtualAddr>=val && val>=noffH.code.virtualAddr) { //check if address is code segment //write code segment to page memory
+        executable->ReadAt(
+            &(kernel->machine->mainMemory[noffH.code.virtualAddr]) +
+                (pageTable[i].physicalPage * PageSize),
+            PageSize, noffH.code.inFileAddr + (i * PageSize));
+    }
 
+    if (noffH.initData.size + noffH.initData.virtualAddr >=val && val>=noffH.initData.virtualAddr && noffH.initData.size > 0) { //check if address is data segment //write data segment to page memory
+        executable->ReadAt(
+            &(kernel->machine->mainMemory[noffH.initData.virtualAddr]) +
+                (pageTable[i].physicalPage * PageSize),
+            PageSize, noffH.initData.inFileAddr + (i * PageSize));
+    }
+    kernel->addrLock->V();
+    delete executable;
+}
+///
 //----------------------------------------------------------------------
 // AddrSpace::Execute
 // 	Run a user program using the current thread

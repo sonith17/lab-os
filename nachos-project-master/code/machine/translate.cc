@@ -207,6 +207,7 @@ ExceptionType Machine::Translate(int virtAddr, int *physAddr, int size,
     if (tlb == NULL) {  // => page table => vpn is index into table
         if (vpn >= pageTableSize) {
             DEBUG(dbgAddr, "Illegal virtual page # " << virtAddr);
+            printf("hi2\n");
             return AddressErrorException;
         } else if (!pageTable[vpn].valid) {
             DEBUG(dbgAddr, "Invalid virtual page # " << virtAddr);

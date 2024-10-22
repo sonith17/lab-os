@@ -456,7 +456,7 @@ void handle_SC_GetPid() {
 
 void ExceptionHandler(ExceptionType which) {
     int type = kernel->machine->ReadRegister(2);
-
+    //cout<<which<<endl;
     DEBUG(dbgSys, "Received Exception " << which << " type: " << type << "\n");
 
     switch (which) {
@@ -465,6 +465,10 @@ void ExceptionHandler(ExceptionType which) {
             DEBUG(dbgSys, "Switch to system mode\n");
             break;
         case PageFaultException:
+            cout<<"Page Fault detected\n";
+            kernel->currentThread->space->Allocate();
+            //printf("hi pg1\n");
+            return;
         case ReadOnlyException:
         case BusErrorException:
         case AddressErrorException:
